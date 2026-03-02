@@ -27,5 +27,5 @@ jobs:
           WECHAT_APPSECRET: ${{ secrets.WECHAT_APPSECRET }}
           WECHAT_OPENID: ${{ secrets.WECHAT_OPENID }}
           OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
-          WECHAT_TEMPLATE_ID: ${{ secrets.WECHAT_TEMPLATE_ID }} # 【新增】模板ID
+          WECHAT_TEMPLATE_ID: ${{ secrets.WECHAT_TEMPLATE_ID_SPECIALIZED }} # 【新增】模板ID
         run: java -jar target/wechat-push-1.0-SNAPSHOT-jar-with-dependencies.jar
