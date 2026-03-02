@@ -151,7 +151,6 @@ public class WeChatPush {
 
         // 设置模板参数和颜色（保留彩色效果）
         JsonObject data = new JsonObject();
-        data.add("greeting", createParam(greeting, "#FF69B4")); // 粉色
         data.add("date", createParam(date, "#FFD700")); // 金色
         data.add("love_days", createParam(loveDays, "#32CD32")); // 绿色
         data.add("weather", createParam(weather, "#FF6347")); // 红色
@@ -159,7 +158,6 @@ public class WeChatPush {
         data.add("humidity", createParam(humidity, "#1E90FF")); // 蓝色
         data.add("wind", createParam(wind, "#9370DB")); // 紫色
         data.add("pressure", createParam(pressure, "#808080")); // 灰色
-        data.add("closing", createParam(closing, "#FF69B4")); // 粉色
 
         msg.add("data", data);
 
