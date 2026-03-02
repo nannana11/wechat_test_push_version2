@@ -91,8 +91,8 @@ public class WeChatPush {
 
             // 【保留模板发送形式，内容改回你原来的文案】
             String result = sendTemplateMessage(accessToken, openId, templateId,
-                    greeting, todayStr, String.valueOf(loveDays),
-                    weatherDesc, temp, humidity, windSpeed, pressure, closing);
+                    todayStr, String.valueOf(loveDays),
+                    weatherDesc, temp, humidity, windSpeed, pressure);
             
             System.out.println("✅ 微信接口响应：" + result);
             System.out.println("=== 推送执行完成 ===");
