@@ -15,29 +15,18 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
-import java.util.Random;
 
 public class WeChatPush {
     // ==================== 【完全保留你的常量】 ====================
     private static final String GIRLFRIEND_NAME = "刘雨嫣";
     private static final int NANJING_CITY_ID = 1806260;
     private static final LocalDate LOVE_START_DATE = LocalDate.of(2025, 11, 6);
-    private static final LocalDate GIRL_BIRTHDAY = LocalDate.of(2026, 9, 20); // 【新增】她的生日，记得改月/日
     // ==============================================================
 
     private static final String TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential";
-    // 【修改】模板消息接口URL
     private static final String SEND_TEMPLATE_URL = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=";
     private static final String WEATHER_URL = "https://api.openweathermap.org/data/2.5/weather?id=" + NANJING_CITY_ID + "&units=metric&lang=zh_cn&appid=";
     private static final Gson GSON = new Gson();
-    private static final Random RANDOM = new Random();
-
-    // 【完全保留你的每日寄语库】
-    private static final String[][] QUOTES = {
-        {"It's not the travelling. It's the arriving that matters.", "不管路途如何，重要的是抵达目的地。"},
-        {"The best thing to hold onto in life is each other.", "生命里最值得抱紧的，是彼此。"},
-        {"Every love story is beautiful, but ours is my favorite.", "每段爱情都很美，但我最爱我们的。"}
-    };
 
     public static void main(String[] args) {
         System.out.println("=== 微信推送程序启动 ===");
@@ -47,7 +36,7 @@ public class WeChatPush {
         String appSecret = System.getenv("WECHAT_APPSECRET");
         String openId = System.getenv("WECHAT_OPENID");
         String weatherKey = System.getenv("OPENWEATHER_API_KEY");
-        String templateId = System.getenv("WECHAT_TEMPLATE_ID"); // 【新增】读取模板ID
+        String templateId = System.getenv("WECHAT_TEMPLATE_ID");
 
         // 微信核心配置判空
         if (appId == null || appId.trim().isEmpty()
@@ -64,28 +53,22 @@ public class WeChatPush {
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日 EEEE", Locale.CHINA);
             String todayStr = today.format(dateFormatter);
             long loveDays = ChronoUnit.DAYS.between(LOVE_START_DATE, today);
-            
-            // 【新增】计算距离她生日的天数
-            LocalDate nextBirthday = GIRL_BIRTHDAY.withYear(today.getYear());
-            if (nextBirthday.isBefore(today)) {
-                nextBirthday = nextBirthday.plusYears(1);
-            }
-            long daysToBirthday = ChronoUnit.DAYS.between(today, nextBirthday);
 
             System.out.println("📅 今天日期：" + todayStr);
             System.out.println("⏳ 在一起：" + loveDays + "天");
-            System.out.println("🎂 距离生日：" + daysToBirthday + "天");
             
             // 【完全保留】获取微信access_token
             String accessToken = getAccessToken(appId, appSecret);
             System.out.println("✅ 获取access_token成功");
 
-            // 【完全保留】获取南京天气
+            // 【完全保留你的天气获取逻辑】
+            String greeting = "☀️☀️" + GIRLFRIEND_NAME + "小宝宝早安！☀️☀️";
             String weatherDesc = "未知";
             String temp = "未知";
             String humidity = "未知";
             String windSpeed = "未知";
-            String suggest = "今天也要开心哦";
+            String pressure = "未知";
+            String closing = "新的一天也要开心哦🥰\n加油加油💪";
 
             if (weatherKey != null && !weatherKey.trim().isEmpty()) {
                 try {
@@ -98,7 +81,7 @@ public class WeChatPush {
                     temp = main.get("temp").getAsString() + "℃（体感" + main.get("feels_like").getAsString() + "℃）";
                     humidity = main.get("humidity").getAsString() + "%";
                     windSpeed = wind.get("speed").getAsString() + "m/s";
-                    suggest = getClothingAdvice(main.get("temp").getAsDouble());
+                    pressure = main.get("pressure").getAsString() + "hPa";
                     
                     System.out.println("✅ 天气获取成功：" + weatherDesc + " " + temp);
                 } catch (Exception e) {
@@ -106,16 +89,10 @@ public class WeChatPush {
                 }
             }
 
-            // 【完全保留】随机获取每日一句
-            String[] quote = QUOTES[RANDOM.nextInt(QUOTES.length)];
-            String enQuote = quote[0];
-            String cnQuote = quote[1];
-
-            // 【仅修改这里】发送模板消息，带彩色文字
-            String result = sendTemplateMessage(accessToken, openId, templateId, 
-                    todayStr, "南京", weatherDesc, temp, humidity, windSpeed, 
-                    String.valueOf(loveDays), String.valueOf(daysToBirthday), 
-                    suggest, enQuote, cnQuote);
+            // 【保留模板发送形式，内容改回你原来的文案】
+            String result = sendTemplateMessage(accessToken, openId, templateId,
+                    greeting, todayStr, String.valueOf(loveDays),
+                    weatherDesc, temp, humidity, windSpeed, pressure, closing);
             
             System.out.println("✅ 微信接口响应：" + result);
             System.out.println("=== 推送执行完成 ===");
@@ -151,16 +128,6 @@ public class WeChatPush {
     }
 
     /**
-     * 【新增】穿衣建议
-     */
-    private static String getClothingAdvice(double temp) {
-        if (temp < 6) return "天气很冷，一定要穿厚外套，注意保暖！";
-        else if (temp < 14) return "有点凉，穿风衣/卫衣加外套正合适。";
-        else if (temp < 22) return "温度舒适，穿长袖刚刚好。";
-        else return "天气暖和，可以穿得清爽一点，记得防晒哦！";
-    }
-
-    /**
      * 【完全保留】获取Token
      */
     private static String getAccessToken(String appId, String secret) throws Exception {
@@ -171,30 +138,28 @@ public class WeChatPush {
     }
 
     /**
-     * 【核心修改】发送模板消息，带彩色文字设置
+     * 【保留模板发送，彩色文字，内容匹配简化版模板】
      */
     private static String sendTemplateMessage(String token, String openId, String templateId,
-            String date, String city, String weather, String temp, String humidity, String wind,
-            String loveDays, String birthdayDays, String suggest, String enQuote, String cnQuote) throws Exception {
+            String greeting, String date, String loveDays,
+            String weather, String temp, String humidity, String wind, String pressure, String closing) throws Exception {
         String url = SEND_TEMPLATE_URL + token;
         
         JsonObject msg = new JsonObject();
         msg.addProperty("touser", openId);
         msg.addProperty("template_id", templateId);
 
-        // 设置模板参数和颜色（颜色参考示例图）
+        // 设置模板参数和颜色（保留彩色效果）
         JsonObject data = new JsonObject();
+        data.add("greeting", createParam(greeting, "#FF69B4")); // 粉色
         data.add("date", createParam(date, "#FFD700")); // 金色
-        data.add("city", createParam(city, "#1E90FF")); // 蓝色
+        data.add("love_days", createParam(loveDays, "#32CD32")); // 绿色
         data.add("weather", createParam(weather, "#FF6347")); // 红色
         data.add("temp", createParam(temp, "#FF69B4")); // 粉色
-        data.add("humidity", createParam(humidity, "#32CD32")); // 绿色
+        data.add("humidity", createParam(humidity, "#1E90FF")); // 蓝色
         data.add("wind", createParam(wind, "#9370DB")); // 紫色
-        data.add("love_days", createParam(loveDays, "#32CD32")); // 绿色
-        data.add("birthday_days", createParam(birthdayDays, "#32CD32")); // 绿色
-        data.add("suggest", createParam(suggest, "#1E90FF")); // 蓝色
-        data.add("en_quote", createParam(enQuote, "#808080")); // 灰色
-        data.add("cn_quote", createParam(cnQuote, "#4169E1")); // 宝蓝色
+        data.add("pressure", createParam(pressure, "#808080")); // 灰色
+        data.add("closing", createParam(closing, "#FF69B4")); // 粉色
 
         msg.add("data", data);
 
