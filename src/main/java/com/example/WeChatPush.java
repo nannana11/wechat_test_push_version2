@@ -78,8 +78,8 @@ public class WeChatPush {
                     JsonObject wind = weatherData.getAsJsonObject("wind");
 
                     weatherDesc = weather.get("description").getAsString();
-                    temp = main.get("temp").getAsString() + "℃（体感" + main.get("feels_like").getAsString() + "℃）";
-                    humidity = main.get("humidity").getAsString() + "%";
+                    temp = main.get("temp").getAsString() + "℃"+"（体感" + main.get("feels_like").getAsString() + "℃）";
+                    humidity = main.get("humidity").getAsString() + "%"+"\n";
                     windSpeed = wind.get("speed").getAsString() + "m/s";
                     pressure = main.get("pressure").getAsString() + "hPa";
                     
