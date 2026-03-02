@@ -141,8 +141,8 @@ public class WeChatPush {
      * 【保留模板发送，彩色文字，内容匹配简化版模板】
      */
     private static String sendTemplateMessage(String token, String openId, String templateId,
-            String greeting, String date, String loveDays,
-            String weather, String temp, String humidity, String wind, String pressure, String closing) throws Exception {
+            String date, String loveDays,
+            String weather, String temp, String humidity, String wind, String pressure) throws Exception {
         String url = SEND_TEMPLATE_URL + token;
         
         JsonObject msg = new JsonObject();
