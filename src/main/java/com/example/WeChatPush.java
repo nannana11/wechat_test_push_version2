@@ -14,10 +14,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors; // 【新增：Java 8 必须导入】
 
 public class WeChatPush {
     // ==================== 【完全保留你的常量】 ====================
@@ -34,28 +31,21 @@ public class WeChatPush {
     public static void main(String[] args) {
         System.out.println("=== 微信推送程序启动 ===");
 
-        // 读取环境变量【仅修改：将单个openId改为多openIds（英文逗号分隔）】
+        // 读取环境变量
         String appId = System.getenv("WECHAT_APPID");
         String appSecret = System.getenv("WECHAT_APPSECRET");
-        String openIdsStr = System.getenv("WECHAT_OPENIDS"); // 多OpenID，英文逗号分隔
+        String openId = System.getenv("WECHAT_OPENID");
         String weatherKey = System.getenv("OPENWEATHER_API_KEY");
         String templateId = System.getenv("WECHAT_TEMPLATE_ID");
 
-        // 微信核心配置判空【仅修改：检查多OpenID】
+        // 微信核心配置判空
         if (appId == null || appId.trim().isEmpty()
                 || appSecret == null || appSecret.trim().isEmpty()
-                || openIdsStr == null || openIdsStr.trim().isEmpty()
+                || openId == null || openId.trim().isEmpty()
                 || templateId == null || templateId.trim().isEmpty()) {
             System.err.println("错误：微信核心配置或模板ID缺失，程序终止");
             System.exit(1);
         }
-
-        // 【核心修正：Java 8 兼容的拆分方式】用 Collectors.toList() 替代 toList()
-        List<String> openIdList = Arrays.stream(openIdsStr.split(","))
-                .map(String::trim)
-                .filter(openId -> !openId.isEmpty())
-                .collect(Collectors.toList()); // 【仅改这一行】
-        System.out.println("✅ 共读取到 " + openIdList.size() + " 个接收人OpenID");
 
         try {
             // 【完全保留你的日期计算】
@@ -99,28 +89,12 @@ public class WeChatPush {
                 }
             }
 
-            // 【核心修改：循环给每个OpenID发送消息】
-            int successCount = 0;
-            int failCount = 0;
-            for (String openId : openIdList) {
-                System.out.println("\n🔹 正在推送至 OpenID：" + openId);
-                try {
-                    String result = sendTemplateMessage(accessToken, openId, templateId,
-                            todayStr, String.valueOf(loveDays),
-                            weatherDesc, temp, humidity, windSpeed, pressure);
-                    System.out.println("✅ 微信接口响应：" + result);
-                    successCount++;
-                } catch (Exception e) {
-                    System.err.println("❌ 推送失败（OpenID：" + openId + "）：" + e.getMessage());
-                    e.printStackTrace();
-                    failCount++;
-                }
-            }
-
-            // 【新增：推送统计】
-            System.out.println("\n=== 推送统计 ===");
-            System.out.println("✅ 成功推送：" + successCount + " 人");
-            System.err.println("❌ 失败推送：" + failCount + " 人");
+            // 【保留模板发送形式，内容改回你原来的文案】
+            String result = sendTemplateMessage(accessToken, openId, templateId,
+                    todayStr, String.valueOf(loveDays),
+                    weatherDesc, temp, humidity, windSpeed, pressure);
+            
+            System.out.println("✅ 微信接口响应：" + result);
             System.out.println("=== 推送执行完成 ===");
 
         } catch (Exception e) {
