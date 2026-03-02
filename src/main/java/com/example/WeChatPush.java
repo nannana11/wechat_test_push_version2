@@ -17,6 +17,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors; // 【新增：Java 8 必须导入】
 
 public class WeChatPush {
     // ==================== 【完全保留你的常量】 ====================
@@ -49,11 +50,11 @@ public class WeChatPush {
             System.exit(1);
         }
 
-        // 【新增：拆分多OpenID为列表】
+        // 【核心修正：Java 8 兼容的拆分方式】用 Collectors.toList() 替代 toList()
         List<String> openIdList = Arrays.stream(openIdsStr.split(","))
                 .map(String::trim)
                 .filter(openId -> !openId.isEmpty())
-                .toList();
+                .collect(Collectors.toList()); // 【仅改这一行】
         System.out.println("✅ 共读取到 " + openIdList.size() + " 个接收人OpenID");
 
         try {
