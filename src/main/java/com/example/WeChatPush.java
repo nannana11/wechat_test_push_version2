@@ -62,7 +62,7 @@ public class WeChatPush {
             System.out.println("✅ 获取access_token成功");
 
             // 【完全保留你的天气获取逻辑】
-            String greeting = "☀️☀️" + GIRLFRIEND_NAME + "小宝宝早安！☀️☀️";
+            String greeting = "☀️☀️" + GIRLFRIEND_NAME + "小宝宝早安！☀️☀️\n";
             String weatherDesc = "未知";
             String temp = "未知";
             String humidity = "未知";
