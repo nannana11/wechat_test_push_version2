@@ -1,4 +1,4 @@
-# how to create a wechat daily push?
+# How to create a wechat daily push?
 ## Steps
 - go to this website and sigh in using wechat:https://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=sandbox/login
 - create a repository in github ,then put the appid and app secret into the repository secret
