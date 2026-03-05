@@ -1,0 +1,14 @@
+title:☀️刘雨嫣小宝宝早安
+content:
+📅 今天是{{date.DATA}} 
+
+⏳ 我们在一起已经{{love_days.DATA}}天了🥳 
+✨【南京今日天气】 
+🌤️天气：{{weather.DATA}} 
+🌡️温度：{{temp.DATA}} 
+💧湿度：{{humidity.DATA}} 
+💨风速：{{wind.DATA}} 
+🌅气压：{{pressure.DATA}} 
+
+新的一天也要开心哦🥰 
+加油加油💪
