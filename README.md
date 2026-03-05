@@ -7,7 +7,7 @@
 - create workflow in the github
 
 ## A&Q
-- A:how to change the time the workflow work？
+- A: how to change the time the workflow work？
 - Q：open the "daily push.yml",the time which you can change is at the head of that file.
 
 ## Attention
